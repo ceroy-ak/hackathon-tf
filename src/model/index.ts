@@ -7,6 +7,8 @@ export const connection = mysql.createConnection({
     database: process.env.MYSQL_DATABASE,
 })
 
+const DB_NAME = process.env.MYSQL_DATABASE
+
 async function mysqlHealthCheck(): Promise<boolean> {
     return new Promise((resolve, reject) => {
         connection.execute('SELECT 1', (err, results) => {
@@ -24,7 +26,7 @@ async function saveTemplate(
     accountId?: string
 ): Promise<number> {
     return new Promise((resolve, reject) => {
-        const query = `INSERT INTO hackathon.templates (template, accountId) VALUES (?, ?)`
+        const query = `INSERT INTO ${DB_NAME}.templates (template, accountId) VALUES (?, ?)`
         const queryValues = [template, accountId || null]
         connection.execute(query, queryValues, (err, results) => {
             if (err) {
@@ -38,7 +40,7 @@ async function saveTemplate(
 
 async function fetchAllTemplates(): Promise<object[]> {
     return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM hackathon.templates`
+        const query = `SELECT * FROM ${DB_NAME}.templates`
         connection.execute(query, (err, results) => {
             if (err) {
                 reject(err)
@@ -51,7 +53,7 @@ async function fetchAllTemplates(): Promise<object[]> {
 
 async function fetchTemplateByAccountId(accountId: string): Promise<object[]> {
     return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM hackathon.templates WHERE accountId = ?`
+        const query = `SELECT * FROM ${DB_NAME}.templates WHERE accountId = ?`
         connection.execute(query, [accountId], (err, results) => {
             if (err) {
                 reject(err)
@@ -64,7 +66,7 @@ async function fetchTemplateByAccountId(accountId: string): Promise<object[]> {
 
 async function deleteTemplateById(templateId: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        const query = `DELETE FROM hackathon.templates WHERE id = ?`
+        const query = `DELETE FROM ${DB_NAME}.templates WHERE id = ?`
         connection.execute(query, [templateId], (err, results) => {
             if (err) {
                 reject(err)
@@ -77,7 +79,7 @@ async function deleteTemplateById(templateId: number): Promise<boolean> {
 
 async function deleteAllTemplate(): Promise<void> {
     return new Promise((resolve, reject) => {
-        const query = `DELETE FROM hackathon.templates`
+        const query = `DELETE FROM ${DB_NAME}.templates`
         connection.execute(query, (err, results) => {
             if (err) {
                 reject(err)
